@@ -25,6 +25,13 @@ dependencies {
     runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+// https://mvnrepository.com/artifact/commons-codec/commons-codec
+    //java 1.7 이상은 취약점 해결됨.(junit4 측에 취약점이 있다는 것 같음)
+    //버전 4.7 및 4.13.1 이전의 JUnit4에서 테스트 규칙 TemporaryFolder에는 로컬 정보 공개 취약성이 포함되어 있습니다
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
 }
 
 tasks.named('test') {
