@@ -40,12 +40,12 @@ public class PostRequestDecryptWrapper extends HttpServletRequestWrapper {
             if (ObjectUtils.isEmpty(rawData)) {
                 return;
             }
-            String publicKey = request.getHeader("publicKey");
-            String normalKey = request.getHeader("normalKey");
-            String privateKeyBase64 = redisService.getStringValues(publicKey);
+            String keyTimestamp = request.getHeader("keyEpochTime");
+            String iv = request.getHeader("iv");
+            String privateKeyBase64 = redisService.getStringValues(keyTimestamp);
             PrivateKey privateKey = RSAUtil.getPrivateKeyFromBase64Encrypted(privateKeyBase64);
 
-            String aesKey = RSAUtil.decryptRSA(normalKey,privateKey);
+            String aesKey = RSAUtil.decryptRSA(iv,privateKey);
 
             AESUtil aesUtil = new AESUtil();
 

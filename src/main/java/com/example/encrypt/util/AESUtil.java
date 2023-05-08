@@ -58,7 +58,7 @@ public class AESUtil {
     }
     public String decryptPayload(String data, String key) {
 //        String content = data.substring(16);
-        byte[] dataBytes = Base64Utils.decodeFromString(data);
+        byte[] dataBytes = Base64Utils.decodeFromUrlSafeString(data);
 
         try {
             Cipher cipher = Cipher.getInstance(ALGORITHM);

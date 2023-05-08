@@ -7,6 +7,8 @@ import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+
 @Service
 @RequiredArgsConstructor
 public class RedisService {
@@ -14,10 +16,14 @@ public class RedisService {
     private final RedisTemplate<String ,Object> redisHashTemplate;
 
 
-    //Long 타입 key, value set
+
     public void setValues(String key, String count) {
         ValueOperations<String , String > values = redisTemplate.opsForValue();
         values.set(key, count);
+    }
+    public void setValuesAndDuration(String key, String count) {
+        ValueOperations<String , String > values = redisTemplate.opsForValue();
+        values.set(key, count, Duration.ofMinutes(10L));
     }
 
     //String 타입 value Get
@@ -44,6 +50,12 @@ public class RedisService {
         HashOperations<String , String, Long> values = redisHashTemplate.opsForHash();
         return values.get("network:"+network, "address:"+address);
     }
+
+//    public void setRSAKey(String timestamp, String aesKey, String rsaKey){
+//        HashOperations<String , String, String> values = redisHashTemplate.opsForHash();
+//        values.put("secretKey:"+timestamp,"aes", aesKey);
+//        values.put("secretKey:"+timestamp,"rsa", rsaKey);
+//    }
 
 
 }

@@ -38,24 +38,32 @@ public class HttpEncryptionFilter implements Filter {
         String method = httpServletRequest.getMethod();
 
         try {
+            if (httpServletRequest.getRequestURI().equals("/test/encryptPayload")) {
+                chain.doFilter(httpServletRequest, responseEncryptWrapper);
+                httpServletResponse.getOutputStream().write(responseEncryptWrapper.encryptResponse());
+            }
             // 첫 key 생성 요청인 경우
-            if (httpServletRequest.getRequestURI().equals("")){
+            else if (httpServletRequest.getRequestURI().equals("/test2/create/key")){
+                chain.doFilter(httpServletRequest, httpServletResponse);
 
             }
             // post 요청인 경우
             else if (method.equals("POST")){
                 PostRequestDecryptWrapper postRequestDecryptWrapper = new PostRequestDecryptWrapper(httpServletRequest, redisService);
                 chain.doFilter(postRequestDecryptWrapper, responseEncryptWrapper);
+                httpServletResponse.getOutputStream().write(responseEncryptWrapper.encryptResponse());
 
-                //Get 요청인 경우
+            //Get 요청인 경우
             }else if (method.equals("GET")){
                 request = new GetRequestDecryptWrapper(httpServletRequest, redisService);
                 chain.doFilter(request, responseEncryptWrapper);
+                httpServletResponse.getOutputStream().write(responseEncryptWrapper.encryptResponse());
 
             }else {
                 chain.doFilter(request,responseEncryptWrapper);
+                httpServletResponse.getOutputStream().write(responseEncryptWrapper.encryptResponse());
             }
-            httpServletResponse.getOutputStream().write(responseEncryptWrapper.encryptResponse());
+
         }catch (CustomException e){
             handleInvalidCorrelationId(responseEncryptWrapper, e);
         }
